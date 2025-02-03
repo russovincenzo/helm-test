@@ -26,7 +26,7 @@ jobs:
 
       - name: Push Helm Chart to OCI
         run: |
-          CHART_VERSION=$(helm show chart ./my-library | grep '^version:' | awk '{print $2}')
+          CHART_VERSION=$(helm show chart ./common-chart | grep '^version:' | awk '{print $2}')
           helm push my-library-${CHART_VERSION}.tgz oci://ghcr.io/${{ github.repository_owner }}/helm
 
       - name: Verify pushed chart
