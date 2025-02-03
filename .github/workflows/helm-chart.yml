@@ -1,0 +1,37 @@
+name: Build & Push Helm Chart to OCI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        run: echo "Helm is already pre-installed in GitHub Actions"
+
+      - name: Enable OCI support
+        run: export HELM_EXPERIMENTAL_OCI=1
+
+      - name: Login to GitHub OCI Registry
+        run: echo "${{ secrets.GHCR_TOKEN }}" | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build Helm Chart
+        run: |
+          helm package .
+          ls -lh
+
+      - name: Push Helm Chart to OCI
+        run: |
+          CHART_VERSION=$(helm show chart ./my-library | grep '^version:' | awk '{print $2}')
+          helm push my-library-${CHART_VERSION}.tgz oci://ghcr.io/${{ github.repository_owner }}/helm
+
+      - name: Verify pushed chart
+        run: |
+          helm search repo oci://ghcr.io/${{ github.repository_owner }}/helm --versions
