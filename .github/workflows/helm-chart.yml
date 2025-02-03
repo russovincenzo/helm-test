@@ -25,7 +25,7 @@ jobs:
           ls -lh
           
       - name: Login to GitHub OCI Registry
-        run: helm registry login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GHCR_TOKEN }}
+        run: helm registry login ghcr.io -u ${{ github.actor }} -p ${{ github.token }}
 
       - name: Push Helm Chart to OCI
         run: |
