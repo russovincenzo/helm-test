@@ -19,9 +19,6 @@ jobs:
       - name: Enable OCI support
         run: export HELM_EXPERIMENTAL_OCI=1
 
-      - name: Login to GitHub OCI Registry
-        run: echo "${{ secrets.GHCR_TOKEN }}" | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
-
       - name: Build Helm Chart
         run: |
           helm package .
